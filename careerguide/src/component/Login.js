@@ -31,7 +31,7 @@ function Login() {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json(); // 11.50-> pending status dikhhti, so we don't see pending status so we have used this
+    const data = await res.json();
 
     if (res.status === 400 || !data) {
       console.log("error ");
@@ -43,8 +43,17 @@ function Login() {
     }
   };
   return (
-    <div>
-      <div className="ml-10">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "650px",
+        width: "100%",
+      }}
+    >
+      <div style={{ width: "30%" }}>
         <h1>Sign In!</h1>
         <form method="POST">
           <input
@@ -62,7 +71,8 @@ function Login() {
           <button onClick={PostData}>Log In</button>
           <Link>Forgot Your Password?</Link>
           <div>
-            Don't Have An Account Yet ?<button>SIGN UP !</button>
+            Don't Have An Account Yet ?
+            <button style={{ height: "50%" }}>SIGN UP !</button>
           </div>
         </form>
       </div>

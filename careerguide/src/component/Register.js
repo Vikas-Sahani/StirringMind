@@ -117,14 +117,19 @@ function Register() {
           style={{
             backgroundColor: "skyblue",
             color: "white",
-            marginBottom: "10%",
-            height: "100%",
+            // marginBottom: "10%",
+            height: "10%",
           }}
         >
           Submit
         </button>
 
-        <Link to="/login">Back To Login</Link>
+        <Link
+          to="/login"
+          style={{ margin: "5% 0%", textDecoration: "none", color: "black" }}
+        >
+          Back To Login
+        </Link>
       </form>
     </div>
   );
