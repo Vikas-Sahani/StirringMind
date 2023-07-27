@@ -1,14 +1,14 @@
 .App{
   background-color: blue;
-  width:  1530px;
-  height:710px  ;
+  width:  100vw;
+  height:46vw  ;
   display: flex;
   justify-content: center;
 }
 
 form{
   width: 30%;
-  height: 80%;
+  height: 75%;
   background-color: white;
   margin-top: 3%;
   display: flex;
