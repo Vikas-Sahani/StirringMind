@@ -22,13 +22,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-  mobileNumber: {
+  mobile: {
     type: Number,
     require: true,
     unique: true,
   },
 });
 
-const User = mongoose.model("USER", userSchema);
+const User = mongoose.model("newdb", userSchema);
 
 module.exports = User;

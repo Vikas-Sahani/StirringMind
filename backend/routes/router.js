@@ -1,52 +1,48 @@
 const express = require("express");
+const router = express.Router();
 const User = require("../models/userSchema");
 
-const router = express.Router();
-
-router.get("/", (req, res) => {
-  res.send("hello from the router file");
-});
-
 router.post("/register", async (req, res) => {
-  console.log("getting the data inside server -> ", req.body); //getting the data from frontend
   const { email, name, password, education, city, mobile } = req.body;
 
-  //checking isEmpty?
+  //now check if any feild is empty or not, if empty then throw an error
   if (!email || !name || !password || !education || !city || !mobile) {
-    console.log("input feilds are empty");
-    return res.status(404).json({ message: "input feilds are empty" });
+    console.log("input feilds are not filled properly");
+    return res
+      .status(404)
+      .json({ error: "input feilds are not filled properly" });
   }
 
-  //if not impty then send the data into db
+  //if sending the data after checking
   try {
-    const isUserExist = await User.findOne({ email });
-    //if Yes(user Exist then tell him to register with another details/values)
-    if (isUserExist) {
-      return res.status(422).json({
-        message: "user is already exite pelease fill with another emails   ",
-      });
-    }
+    const isExist = await User.findOne({ email });
 
-    //if user is not already register then send the user details into db
-    const user = new User({
-      email,
-      name,
-      password,
-      education,
-      city,
-      mobile,
-    });
-    const userRegister = await user.save(); //saving the user data into db
-    if (userRegister) {
+    //if yes(means ->regitered data already exist then throw error)
+    if (isExist) {
+      console.log("user is already registered with these datas");
+      return res
+        .status(404)
+        .json({ error: "user is already registered with these datas" });
+    } else {
+      //if filled data is new & unique then register the user & send it to db
+      const newUserReged = new User({
+        email,
+        name,
+        password,
+        education,
+        city,
+        mobile,
+      });
+      await newUserReged.save();
+      console.log("details are stored in db");
       res
         .status(201)
-        .json({ details: req.body, msg: "user Registered successfully in db" }); // sending the data
-    } else {
-      res.status(500).json({ errMsg: "Fialed to send the user details in DB" });
+        .json({ details: req.body, msg: "details are stored in db" });
     }
-  } catch (error) {
-    console.log("catch -> ", error);
+  } catch (err) {
+    console.log("catch err-> ", err);
   }
+  // res.status(201).json({ msg: "register is created" });  //multilpel res are not allowed to the same http req in the node.js
 });
 
 module.exports = router;
