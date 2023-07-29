@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     require: true,
   },
   password: {
-    type: Number, //to convert it into hash, it's type should be in String
+    type: String, //to convert it into hash, it's type should be in String
     require: true,
   },
   education: {
@@ -34,7 +34,7 @@ userSchema.pre("save", async function (next) {
   console.log("preMethod -> ", this);
 
   if (this.isModified("password")) {
-    this.password = bcryptjs.hash(this.password, 12);
+    this.password = await bcryptjs.hash(this.password, 12);
   }
   next();
 });

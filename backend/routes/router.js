@@ -1,6 +1,8 @@
 const express = require("express");
-const router = express.Router();
 const User = require("../models/userSchema");
+const bcryptjs = require("bcryptjs");
+
+const router = express.Router();
 
 router.post("/register", async (req, res) => {
   const { email, name, password, education, city, mobile } = req.body;
@@ -51,6 +53,41 @@ router.post("/register", async (req, res) => {
     console.log("catch err-> ", err);
   }
   // res.status(201).json({ msg: "register is created" });  //multilpel res are not allowed to the same http req in the node.js
+});
+
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.json({ err: "pls write your details" });
+    } else {
+      //isUserExist on basis of email
+      const isExist = await User.findOne({ email });
+
+      if (!isExist) {
+        console.log("invalide email");
+        return res.json({ err: "pls fill the valid credentials" });
+      } else {
+        // if user exist then check his pswd
+        const isPswd = await bcryptjs.compare(
+          password.toString(),
+          isExist.password
+        );
+        if (!isPswd) {
+          console.log("invalid pswd");
+          return res.json({ err: "pls fill the valid credentials" });
+          // {"email":"vk9782606@gmail.com", "password":"1234"}
+        } else {
+          console.log("user Login Success");
+          return res.json("user Login Success");
+          // {"email":"vk9782606@gmail.com", "password":"abcd"}
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 module.exports = router;
