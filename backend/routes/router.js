@@ -32,12 +32,20 @@ router.post("/register", async (req, res) => {
         education,
         city,
         mobile,
-      });
-      await newUserReged.save();
-      console.log("details are stored in db");
-      res
-        .status(201)
-        .json({ details: req.body, msg: "details are stored in db" });
+      }); //it return's the same stored object
+
+      const regSuccess = await newUserReged.save(); //it return's the saved Object
+
+      if (regSuccess) {
+        //if registration is successfull then show msg
+        console.log("details are stored in db");
+        res
+          .status(201)
+          .json({ details: regSuccess, msg: "details are stored in db" });
+      } else {
+        console.log("details are not stored in db");
+        res.status(404).json({ error: "details are not stored in db" });
+      }
     }
   } catch (err) {
     console.log("catch err-> ", err);

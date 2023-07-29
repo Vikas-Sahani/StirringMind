@@ -108,7 +108,7 @@ function Register() {
         <input type="text" value="India (+91)" />
         <input
           type="text"
-          name="mobileNumber"
+          name="mobile"
           onChange={setdata}
           placeholder="Mobile Numbers"
         />

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcryptjs = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -11,7 +12,7 @@ const userSchema = new mongoose.Schema({
     require: true,
   },
   password: {
-    type: Number,
+    type: Number, //to convert it into hash, it's type should be in String
     require: true,
   },
   education: {
@@ -27,6 +28,15 @@ const userSchema = new mongoose.Schema({
     require: true,
     unique: true,
   },
+});
+
+userSchema.pre("save", async function (next) {
+  console.log("preMethod -> ", this);
+
+  if (this.isModified("password")) {
+    this.password = bcryptjs.hash(this.password, 12);
+  }
+  next();
 });
 
 const User = mongoose.model("newdb", userSchema);
