@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../models/userSchema");
-const bcryptjs = require("bcryptjs");
+const bcryptjs = require("bcryptjs"); //it's does not return a promise
 
 const router = express.Router();
 
@@ -17,10 +17,10 @@ router.post("/register", async (req, res) => {
 
   //if sending the data after checking
   try {
-    const isExist = await User.findOne({ email });
+    const isUserExist = await User.findOne({ email });
 
     //if yes(means ->regitered data already exist then throw error)
-    if (isExist) {
+    if (isUserExist) {
       console.log("user is already registered with these datas");
       return res
         .status(404)
@@ -63,30 +63,34 @@ router.post("/login", async (req, res) => {
       return res.json({ err: "pls write your details" });
     } else {
       //isUserExist on basis of email
-      const isExist = await User.findOne({ email });
+      const isUserExist = await User.findOne({ email });
 
-      if (!isExist) {
+      if (!isUserExist) {
         console.log("invalide email");
         return res.json({ err: "pls fill the valid credentials" });
       } else {
         // if user exist then check his pswd
-        const isPswd = await bcryptjs.compare(
-          password.toString(),
-          isExist.password
-        );
+        const isPswd = bcryptjs.compare(password, isUserExist.password);
         if (!isPswd) {
-          console.log("invalid pswd");
+          console.log("invalid pswd -> ", isPswd);
           return res.json({ err: "pls fill the valid credentials" });
           // {"email":"vk9782606@gmail.com", "password":"1234"}
         } else {
-          console.log("user Login Success");
-          return res.json("user Login Success");
+          const newGenToken = await isUserExist.generateToken();
+          console.log("user Login Success & token is -> ", newGenToken);
+
+          res.cookie("newToken", newGenToken, {
+            expires: new Date(Date.now() + 86400000), //storing token in cookie for 1 days authentication
+            httpOnly: true,
+          });
+
+          return res.json("user Login Success & token stored in cookie");
           // {"email":"vk9782606@gmail.com", "password":"abcd"}
         }
       }
     }
   } catch (error) {
-    console.log(error);
+    console.log("login catch -> ", error);
   }
 });
 
